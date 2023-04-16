@@ -4,11 +4,27 @@ class CrossShape
 {
     private int $lineQty;
     private int $columnQty;
+    private int $horzLinePosition;
+    private int $vertLinePosition;
 
-    public function __contruct($lines = 5)
+    public function __construct(int $lines = 5)
     {
-        $this->lineQty = ($lines < 5) ? 5 : $lines; // Mínimo de 5 linhas
-        $this->columnQty = $lines;
+        $lines = ($lines < 5) ? 5 : $lines; // Mínimo de linhas = 5
+
+        // Padroniza a quantidade de linhas para um número ÍMPAR, senão a renderização ficará desproporcional
+        if ($lines % 2 == 0) {
+            $lines++;
+        }
+
+        $this->lineQty = $lines;
+        $this->columnQty = $lines + 2;
+        $this->horzLinePosition = ceil($lines * 0.2);
+        $this->vertLinePosition = ceil($this->columnQty / 2);
+
+        // Garantir que a linha horizontal da cruz não seja posicionada na primeira linha do desenho
+        if ($this->horzLinePosition <= 1) {
+            $this->horzLinePosition = 2;
+        }
     }
 
     public function renderShape(): string
@@ -21,17 +37,23 @@ class CrossShape
 
             // Percorrer todas as colunas de cada linha
             for ($column = 1; $column <= $this->columnQty; $column++) {
-                $line1 = $line;                         // Linha que começa da esquerda para a direita
-                $line2 = $this->columnQty - $line + 1;  // Linha que começa da direota para a esquerda
 
-                if ($column === $line1 || $column === $line2) {
+                // Adicionar o caractere "*" na posição da linha vertical
+                if ($column == $this->vertLinePosition) {
                     $lineChars .= "*";
-                } else {
+                }
+                // Adicionar o caractere "*" na posição da linha horizontal
+                else if ($line == $this->horzLinePosition && ($column > 1 && $column < $this->columnQty)) {
+                    $lineChars .= "*";
+                }
+                // Adicionar o caractere "." nas demais posições
+                else {
                     $lineChars .= ".";
                 }
             }
 
-            $result .= $lineChars . "\n";
+            // Concatena o resultado parcial com a atual linha preenchida
+            $result .= $lineChars."\n";
         }
 
         return $result;

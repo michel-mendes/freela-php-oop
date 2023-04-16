@@ -1,5 +1,16 @@
-const urlParams = new URLSearchParams(window.location.search);
-const shapeString = urlParams.get('shapeString');
+const urlParams = new URLSearchParams(window.location.search)
+const view = urlParams.get('view')
+
+const shapeString = document.getElementById("indexScript").getAttribute("data_shape_string")
+
+
+if (view && view == "console") {
+    console.log(shapeString)
+}
+else {
+    const renderContainer = document.getElementById("tableContainer")
+    renderShape(shapeString, renderContainer)
+}
 
 
 function renderShape(shapeString = "", container = document.createElement("div")) {
